@@ -1,0 +1,27 @@
+.footer {
+  background: var(--brown);
+  color: rgba(250, 246, 240, 0.55);
+  text-align: center;
+  padding: 2.5rem 5%;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.footer a {
+  color: var(--terracota);
+  transition: opacity 0.2s;
+}
+
+.footer a:hover {
+  opacity: 0.8;
+}
+
+.socialLinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
