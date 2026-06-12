@@ -1,76 +1,193 @@
-.wrap {
+.page {
   min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 700px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  .left {
+    display: none;
+  }
+}
+
+/* ── Panel izquierdo ── */
+.left {
+  background: var(--brown);
+  display: flex;
+  align-items: flex-end;
+  padding: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.left::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: var(--terracota);
+  opacity: 0.18;
+}
+
+.left::after {
+  content: '';
+  position: absolute;
+  bottom: 60px;
+  left: -60px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: var(--salvia);
+  opacity: 0.12;
+}
+
+.leftInner {
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--terracota);
+  margin-bottom: 1.25rem;
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+}
+
+.sub {
+  font-size: 0.9rem;
+  color: rgba(250, 246, 240, 0.5);
+  line-height: 1.7;
+  max-width: 280px;
+}
+
+/* ── Panel derecho ── */
+.right {
+  background: var(--cream);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-bg);
-  padding: 2rem;
+  padding: 3rem 2rem;
 }
 
 .form {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 2.5rem;
   width: 100%;
-  max-width: 380px;
+  max-width: 360px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
-.title {
-  font-family: var(--font-serif);
-  font-size: 1.5rem;
-  color: var(--color-ink);
-  margin: 0 0 0.5rem;
+.formHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
+.lock {
+  font-size: 1.4rem;
+  color: var(--terracota);
+  line-height: 1;
+}
+
+.formTitle {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--brown);
+}
+
+/* ── Campo ── */
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .field label {
-  font-size: 0.85rem;
-  color: var(--color-ink-muted);
-  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brown-mid);
+  font-weight: 400;
 }
 
 .field input {
-  padding: 0.65rem 0.9rem;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-bg);
-  color: var(--color-ink);
+  padding: 0.8rem 0;
+  border: none;
+  border-bottom: 1.5px solid var(--brown-mid);
+  background: transparent;
+  color: var(--brown);
   font-size: 1rem;
+  font-family: var(--font-body);
   outline: none;
   transition: border-color 0.2s;
 }
 
+.field input::placeholder {
+  color: rgba(61, 43, 31, 0.25);
+}
+
 .field input:focus {
-  border-color: var(--color-accent);
+  border-bottom-color: var(--terracota);
 }
 
+/* ── Error ── */
 .error {
-  font-size: 0.85rem;
-  color: #c0392b;
-  margin: 0;
+  font-size: 0.83rem;
+  color: #b94040;
+  margin: -0.5rem 0;
 }
 
+/* ── Botón ── */
 .btn {
-  padding: 0.75rem;
-  background: var(--color-ink);
-  color: var(--color-bg);
+  margin-top: 0.5rem;
+  padding: 0.9rem 1.5rem;
+  background: var(--brown);
+  color: var(--cream);
   border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  font-family: var(--font-body);
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: background 0.2s;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--brown-mid);
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
+}
+
+/* ── Volver ── */
+.back {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--brown-mid);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.back:hover {
+  opacity: 1;
 }

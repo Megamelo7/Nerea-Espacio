@@ -33,25 +33,46 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className={styles.wrap}>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <h1 className={styles.title}>Panel de administración</h1>
-        <div className={styles.field}>
-          <label htmlFor="password">Contraseña</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoFocus
-            required
-          />
+    <div className={styles.page}>
+      <div className={styles.left}>
+        <div className={styles.leftInner}>
+          <p className={styles.eyebrow}>Nerea Espacio</p>
+          <h1 className={styles.headline}>Panel de<br />administración</h1>
+          <p className={styles.sub}>Gestioná tus obras, pedidos e imágenes desde un solo lugar.</p>
         </div>
-        {error && <p className={styles.error}>{error}</p>}
-        <button type="submit" className={styles.btn} disabled={loading}>
-          {loading ? 'Verificando…' : 'Entrar'}
-        </button>
-      </form>
+      </div>
+
+      <div className={styles.right}>
+        <form className={styles.form} onSubmit={handleSubmit} noValidate>
+          <div className={styles.formHeader}>
+            <span className={styles.lock}>⊙</span>
+            <h2 className={styles.formTitle}>Acceso privado</h2>
+          </div>
+
+          <div className={styles.field}>
+            <label htmlFor="password">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••••"
+              autoFocus
+              required
+            />
+          </div>
+
+          {error && (
+            <p className={styles.error}>{error}</p>
+          )}
+
+          <button type="submit" className={styles.btn} disabled={loading}>
+            {loading ? 'Verificando…' : 'Ingresar'}
+          </button>
+
+          <a href="/" className={styles.back}>← Volver al sitio</a>
+        </form>
+      </div>
     </div>
   )
 }
