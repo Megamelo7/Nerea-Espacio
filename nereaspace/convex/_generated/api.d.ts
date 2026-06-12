@@ -10,6 +10,8 @@
 
 import type * as artworks from "../artworks.js";
 import type * as messages from "../messages.js";
+import type * as orders from "../orders.js";
+import type * as storage from "../storage.js";
 
 import type {
   ApiFromModules,
@@ -20,6 +22,8 @@ import type {
 declare const fullApi: ApiFromModules<{
   artworks: typeof artworks;
   messages: typeof messages;
+  orders: typeof orders;
+  storage: typeof storage;
 }>;
 
 /**

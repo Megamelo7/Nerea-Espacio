@@ -1,7 +1,5 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAction } from 'convex/react'
-import { api } from '../../convex/_generated/api'
 import { useAdminAuth } from '../context/AdminAuth'
 import styles from './AdminLogin.module.css'
 
@@ -9,7 +7,6 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const loginAction = useAction(api.auth.login)
   const { login } = useAdminAuth()
   const navigate = useNavigate()
 
@@ -17,19 +14,14 @@ export default function AdminLogin() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    try {
-      const res = await loginAction({ password })
-      if (res.ok) {
-        login()
-        navigate('/admin')
-      } else {
-        setError('Contraseña incorrecta.')
-      }
-    } catch {
-      setError('Error de conexión. Intentá de nuevo.')
-    } finally {
-      setLoading(false)
+    await new Promise((r) => setTimeout(r, 300))
+    if (password === import.meta.env.VITE_ADMIN_PASSWORD) {
+      login()
+      navigate('/admin')
+    } else {
+      setError('Contraseña incorrecta.')
     }
+    setLoading(false)
   }
 
   return (
