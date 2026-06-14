@@ -12,7 +12,7 @@ export default defineSchema({
     description: v.string(),
     colorPalette: v.array(v.string()),
     imageUrl: v.optional(v.string()),
-    storageId: v.optional(v.id('_storage')),
+    storageIds: v.optional(v.array(v.id('_storage'))),
     order: v.optional(v.number()),
   })
     .index('by_available', ['available'])

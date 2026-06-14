@@ -1,16 +1,22 @@
 import { query, mutation } from './_generated/server'
 import { v } from 'convex/values'
-import { QueryCtx, MutationCtx } from './_generated/server'
+import { QueryCtx } from './_generated/server'
 import { Id } from './_generated/dataModel'
 
-async function withImageUrl(
+async function withImages(
   ctx: QueryCtx,
-  artwork: { storageId?: Id<'_storage'>; imageUrl?: string } & Record<string, unknown>,
+  artwork: { storageIds?: Id<'_storage'>[]; imageUrl?: string } & Record<string, unknown>,
 ) {
-  const imageUrl = artwork.storageId
-    ? await ctx.storage.getUrl(artwork.storageId)
-    : (artwork.imageUrl ?? null)
-  return { ...artwork, imageUrl }
+  let imageUrls: (string | null)[] = []
+
+  if (artwork.storageIds && artwork.storageIds.length > 0) {
+    imageUrls = await Promise.all(artwork.storageIds.map((id) => ctx.storage.getUrl(id)))
+  } else if (artwork.imageUrl) {
+    imageUrls = [artwork.imageUrl]
+  }
+
+  const imageUrl = imageUrls[0] ?? null
+  return { ...artwork, imageUrl, imageUrls }
 }
 
 // ── Queries ────────────────────────────────────────────────────────────────
@@ -19,7 +25,7 @@ export const list = query({
   args: {},
   handler: async (ctx) => {
     const artworks = await ctx.db.query('artworks').order('asc').take(200)
-    return await Promise.all(artworks.map((a) => withImageUrl(ctx, a)))
+    return await Promise.all(artworks.map((a) => withImages(ctx, a)))
   },
 })
 
@@ -28,7 +34,7 @@ export const get = query({
   handler: async (ctx, { id }) => {
     const artwork = await ctx.db.get(id)
     if (!artwork) return null
-    return await withImageUrl(ctx, artwork)
+    return await withImages(ctx, artwork)
   },
 })
 
@@ -127,8 +133,7 @@ export const create = mutation({
     available: v.boolean(),
     description: v.string(),
     colorPalette: v.array(v.string()),
-    imageUrl: v.optional(v.string()),
-    storageId: v.optional(v.id('_storage')),
+    storageIds: v.optional(v.array(v.id('_storage'))),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert('artworks', { ...args, order: Date.now() })
@@ -146,8 +151,7 @@ export const update = mutation({
     available: v.optional(v.boolean()),
     description: v.optional(v.string()),
     colorPalette: v.optional(v.array(v.string())),
-    imageUrl: v.optional(v.string()),
-    storageId: v.optional(v.id('_storage')),
+    storageIds: v.optional(v.array(v.id('_storage'))),
     order: v.optional(v.number()),
   },
   handler: async (ctx, { id, ...fields }) => {
@@ -162,8 +166,8 @@ export const remove = mutation({
   handler: async (ctx, { id }) => {
     const artwork = await ctx.db.get(id)
     if (!artwork) throw new Error('Obra no encontrada')
-    if (artwork.storageId) {
-      await ctx.storage.delete(artwork.storageId)
+    if (artwork.storageIds) {
+      await Promise.all(artwork.storageIds.map((sid) => ctx.storage.delete(sid)))
     }
     await ctx.db.delete(id)
   },

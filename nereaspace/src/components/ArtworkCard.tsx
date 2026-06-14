@@ -3,10 +3,10 @@ import { Doc } from '../../convex/_generated/dataModel'
 import OrderModal from './OrderModal'
 import styles from './ArtworkCard.module.css'
 
-type ArtworkWithUrl = Doc<'artworks'> & { imageUrl: string | null }
+type ArtworkWithImages = Doc<'artworks'> & { imageUrl: string | null; imageUrls: (string | null)[] }
 
 interface Props {
-  artwork: ArtworkWithUrl
+  artwork: ArtworkWithImages
 }
 
 function ArtworkPlaceholder({ colors, seed }: { colors: string[]; seed: number }) {

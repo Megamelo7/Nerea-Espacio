@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
@@ -31,14 +31,15 @@ export default function AdminPanel() {
   const artworks = useQuery(api.artworks.list)
   const orders = useQuery(api.orders.list)
   const updateStatus = useMutation(api.orders.updateStatus)
-  type ArtworkWithUrl = Doc<'artworks'> & { imageUrl: string | null }
-  const [editing, setEditing] = useState<ArtworkWithUrl | null>(null)
+  type ArtworkWithImages = Doc<'artworks'> & { imageUrl: string | null; imageUrls: (string | null)[] }
+  const [editing, setEditing] = useState<ArtworkWithImages | null>(null)
   const [showNew, setShowNew] = useState(false)
 
-  if (!isAdmin) {
-    navigate('/admin/login')
-    return null
-  }
+  useEffect(() => {
+    if (!isAdmin) navigate('/admin/login')
+  }, [isAdmin, navigate])
+
+  if (!isAdmin) return null
 
   function handleLogout() {
     logout()

@@ -15,6 +15,15 @@
   --shadow:     rgba(61, 43, 31, 0.13);
   --font-display: 'Cormorant Garamond', serif;
   --font-body:    'Lato', sans-serif;
+
+  /* Admin design tokens */
+  --color-bg:       var(--cream);
+  --color-surface:  var(--offwhite);
+  --color-border:   rgba(61, 43, 31, 0.15);
+  --color-ink:      var(--brown);
+  --color-ink-muted: var(--brown-mid);
+  --color-accent:   var(--terracota);
+  --font-serif:     var(--font-display);
 }
 
 html {

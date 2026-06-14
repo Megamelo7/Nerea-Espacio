@@ -2,11 +2,16 @@ import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { useMutation } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
 import { Doc, Id } from '../../../convex/_generated/dataModel'
-import ImageUploader from './ImageUploader'
+import MultiImageUploader from './MultiImageUploader'
 import styles from './ArtworkEditor.module.css'
 
+type ArtworkWithImages = Doc<'artworks'> & {
+  imageUrl: string | null
+  imageUrls: (string | null)[]
+}
+
 interface Props {
-  artwork: Doc<'artworks'> & { imageUrl: string | null }
+  artwork: ArtworkWithImages
   onClose: () => void
 }
 
@@ -20,16 +25,14 @@ export default function ArtworkEditor({ artwork, onClose }: Props) {
     available: artwork.available,
     description: artwork.description,
   })
-  const [storageId, setStorageId] = useState<Id<'_storage'> | null>(
-    artwork.storageId ?? null,
+  const [storageIds, setStorageIds] = useState<Id<'_storage'>[]>(
+    artwork.storageIds ?? [],
   )
   const [saving, setSaving] = useState(false)
   const update = useMutation(api.artworks.update)
   const remove = useMutation(api.artworks.remove)
 
-  function handleChange(
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
+  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value, type } = e.target
     setForm((prev) => ({
       ...prev,
@@ -45,22 +48,13 @@ export default function ArtworkEditor({ artwork, onClose }: Props) {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setSaving(true)
-    await update({
-      id: artwork._id,
-      ...form,
-      storageId: storageId ?? undefined,
-    })
+    await update({ id: artwork._id, ...form, storageIds })
     setSaving(false)
     onClose()
   }
 
   async function handleDelete() {
-    if (
-      !confirm(
-        `¿Eliminar "${artwork.title}"? Esta acción no se puede deshacer.`,
-      )
-    )
-      return
+    if (!confirm(`¿Eliminar "${artwork.title}"? Esta acción no se puede deshacer.`)) return
     await remove({ id: artwork._id })
     onClose()
   }
@@ -70,108 +64,57 @@ export default function ArtworkEditor({ artwork, onClose }: Props) {
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
           <h2>Editar obra</h2>
-          <button className={styles.closeBtn} onClick={onClose}>
-            ✕
-          </button>
+          <button className={styles.closeBtn} onClick={onClose}>✕</button>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.cols}>
             <div className={styles.col}>
               <Field label="Título">
-                <input
-                  name="title"
-                  value={form.title}
-                  onChange={handleChange}
-                  required
-                />
+                <input name="title" value={form.title} onChange={handleChange} required />
               </Field>
               <Field label="Técnica">
-                <input
-                  name="technique"
-                  value={form.technique}
-                  onChange={handleChange}
-                  required
-                />
+                <input name="technique" value={form.technique} onChange={handleChange} required />
               </Field>
               <Field label="Dimensiones">
-                <input
-                  name="dimensions"
-                  value={form.dimensions}
-                  onChange={handleChange}
-                  required
-                />
+                <input name="dimensions" value={form.dimensions} onChange={handleChange} required />
               </Field>
               <div className={styles.row}>
                 <Field label="Año">
-                  <input
-                    name="year"
-                    type="number"
-                    value={form.year}
-                    onChange={handleChange}
-                    required
-                  />
+                  <input name="year" type="number" value={form.year} onChange={handleChange} required />
                 </Field>
                 <Field label="Precio (ARS)">
-                  <input
-                    name="price"
-                    type="number"
-                    value={form.price}
-                    onChange={handleChange}
-                    required
-                  />
+                  <input name="price" type="number" value={form.price} onChange={handleChange} required />
                 </Field>
               </div>
               <Field label="Descripción">
-                <textarea
-                  name="description"
-                  value={form.description}
-                  onChange={handleChange}
-                  rows={3}
-                  required
-                />
+                <textarea name="description" value={form.description} onChange={handleChange} rows={3} required />
               </Field>
               <label className={styles.checkLabel}>
-                <input
-                  type="checkbox"
-                  name="available"
-                  checked={form.available}
-                  onChange={handleChange}
-                />
+                <input type="checkbox" name="available" checked={form.available} onChange={handleChange} />
                 Disponible para venta
               </label>
             </div>
 
             <div className={styles.col}>
-              <p className={styles.fieldLabel}>Imagen</p>
-              <ImageUploader
-                currentUrl={artwork.imageUrl}
-                onUploaded={(id) => setStorageId(id)}
+              <p className={styles.fieldLabel}>Imágenes</p>
+              <MultiImageUploader
+                existing={storageIds.map((id, i) => ({
+                  storageId: id,
+                  url: artwork.imageUrls[i] ?? null,
+                }))}
+                onChange={setStorageIds}
               />
             </div>
           </div>
 
           <div className={styles.actions}>
-            <button
-              type="button"
-              className={styles.deleteBtn}
-              onClick={handleDelete}
-            >
+            <button type="button" className={styles.deleteBtn} onClick={handleDelete}>
               Eliminar obra
             </button>
             <div className={styles.rightActions}>
-              <button
-                type="button"
-                className={styles.cancelBtn}
-                onClick={onClose}
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className={styles.saveBtn}
-                disabled={saving}
-              >
+              <button type="button" className={styles.cancelBtn} onClick={onClose}>Cancelar</button>
+              <button type="submit" className={styles.saveBtn} disabled={saving}>
                 {saving ? 'Guardando…' : 'Guardar cambios'}
               </button>
             </div>
@@ -182,13 +125,7 @@ export default function ArtworkEditor({ artwork, onClose }: Props) {
   )
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string
-  children: React.ReactNode
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className={styles.field}>
       <label className={styles.fieldLabel}>{label}</label>

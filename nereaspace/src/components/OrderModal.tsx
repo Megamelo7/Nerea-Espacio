@@ -4,10 +4,10 @@ import { api } from '../../convex/_generated/api'
 import { Doc } from '../../convex/_generated/dataModel'
 import styles from './OrderModal.module.css'
 
-type ArtworkWithUrl = Doc<'artworks'> & { imageUrl: string | null }
+type ArtworkWithImages = Doc<'artworks'> & { imageUrl: string | null; imageUrls: (string | null)[] }
 
 interface Props {
-  artwork: ArtworkWithUrl
+  artwork: ArtworkWithImages
   onClose: () => void
 }
 
