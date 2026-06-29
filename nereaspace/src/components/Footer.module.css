@@ -25,3 +25,16 @@
   justify-content: center;
   gap: 0.5rem;
 }
+
+.adminLink {
+  margin-top: 0.8rem;
+  font-size: 0.65rem;
+  color: rgba(250, 246, 240, 0.2);
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.adminLink:hover {
+  color: rgba(250, 246, 240, 0.5);
+}

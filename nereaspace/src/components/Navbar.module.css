@@ -46,6 +46,22 @@
   color: var(--terracota);
 }
 
+.adminBtn {
+  font-size: 0.72rem !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracota) !important;
+  border: 1px solid var(--terracota);
+  padding: 0.3rem 0.8rem;
+  border-radius: 2px;
+  transition: background 0.2s, color 0.2s !important;
+}
+
+.adminBtn:hover {
+  background: var(--terracota);
+  color: var(--cream) !important;
+}
+
 @media (max-width: 600px) {
   .links { gap: 1.2rem; }
   .links a { font-size: 0.72rem; }

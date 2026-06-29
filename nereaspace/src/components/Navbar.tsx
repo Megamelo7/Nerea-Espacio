@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { navItems } from '../data/artworks'
 import styles from './Navbar.module.css'
 
@@ -38,6 +39,9 @@ export default function Navbar() {
             </a>
           </li>
         ))}
+        <li>
+          <Link to="/admin/login" className={styles.adminBtn}>Admin</Link>
+        </li>
       </ul>
     </nav>
   )

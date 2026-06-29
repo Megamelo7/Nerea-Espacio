@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styles from './Footer.module.css'
 
 export default function Footer() {
@@ -11,6 +12,7 @@ export default function Footer() {
         <span>·</span>
         <a href="https://wa.me/5491160461919" target="_blank" rel="noopener noreferrer">WhatsApp</a>
       </div>
+      <Link to="/admin/login" className={styles.adminLink}>Admin</Link>
     </footer>
   )
 }
