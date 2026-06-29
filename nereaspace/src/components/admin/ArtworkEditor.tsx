@@ -71,24 +71,24 @@ export default function ArtworkEditor({ artwork, onClose }: Props) {
           <div className={styles.cols}>
             <div className={styles.col}>
               <Field label="Título">
-                <input name="title" value={form.title} onChange={handleChange} required />
+                <input name="title" value={form.title} onChange={handleChange} />
               </Field>
               <Field label="Técnica">
-                <input name="technique" value={form.technique} onChange={handleChange} required />
+                <input name="technique" value={form.technique} onChange={handleChange} />
               </Field>
               <Field label="Dimensiones">
-                <input name="dimensions" value={form.dimensions} onChange={handleChange} required />
+                <input name="dimensions" value={form.dimensions} onChange={handleChange} />
               </Field>
               <div className={styles.row}>
                 <Field label="Año">
-                  <input name="year" type="number" value={form.year} onChange={handleChange} required />
+                  <input name="year" type="number" value={form.year} onChange={handleChange} />
                 </Field>
                 <Field label="Precio (ARS)">
-                  <input name="price" type="number" value={form.price} onChange={handleChange} required />
+                  <input name="price" type="number" value={form.price} onChange={handleChange} />
                 </Field>
               </div>
               <Field label="Descripción">
-                <textarea name="description" value={form.description} onChange={handleChange} rows={3} required />
+                <textarea name="description" value={form.description} onChange={handleChange} rows={3} />
               </Field>
               <label className={styles.checkLabel}>
                 <input type="checkbox" name="available" checked={form.available} onChange={handleChange} />

@@ -125,18 +125,29 @@ export const seed = mutation({
 
 export const create = mutation({
   args: {
-    title: v.string(),
-    technique: v.string(),
-    dimensions: v.string(),
-    year: v.number(),
-    price: v.number(),
-    available: v.boolean(),
-    description: v.string(),
-    colorPalette: v.array(v.string()),
+    title: v.optional(v.string()),
+    technique: v.optional(v.string()),
+    dimensions: v.optional(v.string()),
+    year: v.optional(v.number()),
+    price: v.optional(v.number()),
+    available: v.optional(v.boolean()),
+    description: v.optional(v.string()),
+    colorPalette: v.optional(v.array(v.string())),
     storageIds: v.optional(v.array(v.id('_storage'))),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert('artworks', { ...args, order: Date.now() })
+    return await ctx.db.insert('artworks', {
+      title: args.title ?? '',
+      technique: args.technique ?? '',
+      dimensions: args.dimensions ?? '',
+      year: args.year ?? new Date().getFullYear(),
+      price: args.price ?? 0,
+      available: args.available ?? true,
+      description: args.description ?? '',
+      colorPalette: args.colorPalette ?? ['#f0ece8', '#d4c4b4', '#c8b4a0', '#b8a090'],
+      storageIds: args.storageIds,
+      order: Date.now(),
+    })
   },
 })
 

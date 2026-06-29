@@ -63,29 +63,29 @@ export default function NewArtworkForm({ onClose }: Props) {
             <div className={styles.col}>
               <div className={styles.field}>
                 <label className={styles.fieldLabel}>Título</label>
-                <input name="title" value={form.title} onChange={handleChange} required />
+                <input name="title" value={form.title} onChange={handleChange}  />
               </div>
               <div className={styles.field}>
                 <label className={styles.fieldLabel}>Técnica</label>
-                <input name="technique" value={form.technique} onChange={handleChange} required />
+                <input name="technique" value={form.technique} onChange={handleChange}  />
               </div>
               <div className={styles.field}>
                 <label className={styles.fieldLabel}>Dimensiones</label>
-                <input name="dimensions" value={form.dimensions} onChange={handleChange} placeholder="40×50 cm" required />
+                <input name="dimensions" value={form.dimensions} onChange={handleChange} placeholder="40×50 cm"  />
               </div>
               <div className={styles.row}>
                 <div className={styles.field}>
                   <label className={styles.fieldLabel}>Año</label>
-                  <input name="year" type="number" value={form.year} onChange={handleChange} required />
+                  <input name="year" type="number" value={form.year} onChange={handleChange}  />
                 </div>
                 <div className={styles.field}>
                   <label className={styles.fieldLabel}>Precio (ARS)</label>
-                  <input name="price" type="number" value={form.price} onChange={handleChange} required />
+                  <input name="price" type="number" value={form.price} onChange={handleChange}  />
                 </div>
               </div>
               <div className={styles.field}>
                 <label className={styles.fieldLabel}>Descripción</label>
-                <textarea name="description" value={form.description} onChange={handleChange} rows={3} required />
+                <textarea name="description" value={form.description} onChange={handleChange} rows={3}  />
               </div>
               <label className={styles.checkLabel}>
                 <input type="checkbox" name="available" checked={form.available} onChange={handleChange} />
