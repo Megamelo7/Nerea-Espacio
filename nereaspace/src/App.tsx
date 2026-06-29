@@ -26,7 +26,7 @@ function PublicSite() {
 
 export default function App() {
   return (
-    <BrowserRouter basename="/nerea-espacio">
+    <BrowserRouter basename="/Nerea-Espacio">
       <AdminAuthProvider>
         <Routes>
           <Route path="/" element={<PublicSite />} />
