@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { useAdminAuth } from '../context/AdminAuth'
 import ArtworkEditor from '../components/admin/ArtworkEditor'
 import NewArtworkForm from '../components/admin/NewArtworkForm'
 import styles from './AdminPanel.module.css'
-import { Doc, Id } from '../../convex/_generated/dataModel'
+import { Doc } from '../../convex/_generated/dataModel'
 
-type Tab = 'orders' | 'artworks'
+type Tab = 'orders' | 'artworks' | 'messages'
+
+const SUBJECT_LABELS: Record<string, string> = {
+  compra: 'Compra',
+  encargo: 'Encargo',
+  info: 'Consulta general',
+}
 
 const STATUS_LABELS: Record<string, string> = {
   pending: 'Pendiente',
@@ -30,7 +36,11 @@ export default function AdminPanel() {
   const [tab, setTab] = useState<Tab>('orders')
   const artworks = useQuery(api.artworks.list)
   const orders = useQuery(api.orders.list)
+  const messages = useQuery(api.messages.list)
   const updateStatus = useMutation(api.orders.updateStatus)
+  const markRead = useMutation(api.messages.markRead)
+  const markAllRead = useMutation(api.messages.markAllRead)
+  const removeMessage = useMutation(api.messages.remove)
   type ArtworkWithImages = Doc<'artworks'> & { imageUrl: string | null; imageUrls: (string | null)[] }
   const [editing, setEditing] = useState<ArtworkWithImages | null>(null)
   const [showNew, setShowNew] = useState(false)
@@ -47,13 +57,14 @@ export default function AdminPanel() {
   }
 
   const pendingCount = orders?.filter((o) => o.status === 'pending').length ?? 0
+  const unreadCount = messages?.filter((m) => !m.read).length ?? 0
 
   return (
     <div className={styles.wrap}>
       <header className={styles.header}>
         <h1 className={styles.title}>Nerea Espacio · Admin</h1>
         <div className={styles.headerActions}>
-          <a href="/" className={styles.siteLink}>Ver sitio →</a>
+          <Link to="/" className={styles.siteLink}>Ver sitio →</Link>
           <button className={styles.logoutBtn} onClick={handleLogout}>Cerrar sesión</button>
         </div>
       </header>
@@ -71,6 +82,13 @@ export default function AdminPanel() {
           onClick={() => setTab('artworks')}
         >
           Obras
+        </button>
+        <button
+          className={`${styles.tab} ${tab === 'messages' ? styles.tabActive : ''}`}
+          onClick={() => setTab('messages')}
+        >
+          Consultas
+          {unreadCount > 0 && <span className={styles.badge}>{unreadCount}</span>}
         </button>
       </div>
 
@@ -162,6 +180,52 @@ export default function AdminPanel() {
                   >
                     Editar
                   </button>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        {tab === 'messages' && (
+          <>
+            <div className={styles.topBar}>
+              <h2 className={styles.sectionTitle}>
+                Consultas ({messages?.length ?? 0})
+              </h2>
+              {unreadCount > 0 && (
+                <button className={styles.addBtn} onClick={() => markAllRead({})}>
+                  Marcar todas como leídas
+                </button>
+              )}
+            </div>
+
+            {messages?.length === 0 && (
+              <p className={styles.empty}>Todavía no hay consultas.</p>
+            )}
+
+            <div className={styles.messagesList}>
+              {messages?.map((msg) => (
+                <div
+                  key={msg._id}
+                  className={`${styles.messageRow} ${!msg.read ? styles.messageUnread : ''}`}
+                >
+                  <div className={styles.messageLeft}>
+                    <span className={`${styles.subjectTag} ${styles[`subject_${msg.subject}`]}`}>
+                      {SUBJECT_LABELS[msg.subject] ?? msg.subject}
+                    </span>
+                    <strong className={styles.messageName}>{msg.name}</strong>
+                    <a href={`mailto:${msg.email}`} className={styles.messageEmail}>{msg.email}</a>
+                  </div>
+                  <p className={styles.messageBody}>{msg.message}</p>
+                  <div className={styles.messageActions}>
+                    {!msg.read && (
+                      <button className={styles.readBtn} onClick={() => markRead({ id: msg._id })}>
+                        Marcar leída
+                      </button>
+                    )}
+                    <button className={styles.cancelBtn} onClick={() => removeMessage({ id: msg._id })}>
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
