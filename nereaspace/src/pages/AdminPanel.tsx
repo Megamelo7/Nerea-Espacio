@@ -64,7 +64,7 @@ export default function AdminPanel() {
       <header className={styles.header}>
         <h1 className={styles.title}>Nerea Espacio · Admin</h1>
         <div className={styles.headerActions}>
-          <a href={import.meta.env.BASE_URL} className={styles.siteLink}>Ver sitio →</a>
+          <a href="/" className={styles.siteLink}>Ver sitio →</a>
           <button className={styles.logoutBtn} onClick={handleLogout}>Cerrar sesión</button>
         </div>
       </header>

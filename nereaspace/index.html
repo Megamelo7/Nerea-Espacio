@@ -8,14 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
-    <script>
-      // Recupera la ruta guardada por 404.html
-      var redirect = sessionStorage.getItem('spa_redirect');
-      if (redirect) {
-        sessionStorage.removeItem('spa_redirect');
-        window.history.replaceState(null, '', '/Nerea-Espacio' + redirect);
-      }
-    </script>
   </head>
   <body>
     <div id="root"></div>
