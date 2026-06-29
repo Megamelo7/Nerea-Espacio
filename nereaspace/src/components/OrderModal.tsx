@@ -22,8 +22,9 @@ const EMPTY: FormData = { name: '', email: '', phone: '', message: '' }
 
 export default function OrderModal({ artwork, onClose }: Props) {
   const [form, setForm] = useState<FormData>(EMPTY)
-  const [status, setStatus] = useState<'idle' | 'sending' | 'done'>('idle')
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
   const [orderNumber, setOrderNumber] = useState<number | null>(null)
+  const [errorMsg, setErrorMsg] = useState('')
   const createOrder = useMutation(api.orders.create)
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -34,15 +35,21 @@ export default function OrderModal({ artwork, onClose }: Props) {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setStatus('sending')
-    const res = await createOrder({
-      artworkId: artwork._id,
-      customerName: form.name,
-      customerEmail: form.email,
-      customerPhone: form.phone,
-      message: form.message || undefined,
-    })
-    setOrderNumber(res.orderNumber)
-    setStatus('done')
+    setErrorMsg('')
+    try {
+      const res = await createOrder({
+        artworkId: artwork._id,
+        customerName: form.name,
+        customerEmail: form.email,
+        customerPhone: form.phone,
+        message: form.message || undefined,
+      })
+      setOrderNumber(res.orderNumber)
+      setStatus('done')
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'Error al registrar el pedido. Intentá de nuevo.')
+      setStatus('error')
+    }
   }
 
   const formattedPrice = new Intl.NumberFormat('es-AR', {
@@ -141,6 +148,9 @@ export default function OrderModal({ artwork, onClose }: Props) {
                   rows={3}
                 />
               </div>
+              {status === 'error' && (
+                <p style={{ color: '#b94040', fontSize: '0.85rem', margin: '0 0 0.5rem' }}>{errorMsg}</p>
+              )}
               <button type="submit" className={styles.submitBtn} disabled={status === 'sending'}>
                 {status === 'sending' ? 'Registrando pedido…' : 'Confirmar pedido'}
               </button>
